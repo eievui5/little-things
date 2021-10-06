@@ -28,11 +28,11 @@ namespace matrix {
         for (int i = 0; i < line.size(); i++) {
             if (line[i] == 0) {
                 if (std::rand() % 20 == 0) {
-                    line[i] = line_lookup.size() / 2 + std::rand() % (line_lookup.size() / 2);
+                    line[i] = line_lookup.size() / 2 + std::rand() % (line_lookup.size() / 2) + 1;
                 }
                 result += ' ';
             } else {
-                result += line_lookup[line[i]--];
+                result += line_lookup[line[i]-- - 1];
             }
         }
         std::cout << "\033[92;49m" << result << '\n';
@@ -40,6 +40,7 @@ namespace matrix {
 }
 
 static struct option const longopts[] = {
+    {"direct",        required_argument, NULL, 'd' },
 	{ "file",         required_argument, NULL, 'f' },
 	{ "lines",        required_argument, NULL, 'l' },
 	{ "width",        required_argument, NULL, 'w' },
@@ -58,6 +59,14 @@ int main(int argc, char* argv[]) {
 		int value;
 
         switch (option_char) {
+        case 'd': {
+            matrix::line_lookup.clear();
+            while (*optarg != 0) {
+                std::string nextc(1, *optarg++);
+                matrix::line_lookup.push_back(nextc);
+            }
+            matrix::line_lookup.push_back(" ");
+        }
         case 'f': {
             std::ifstream input_file;
 
