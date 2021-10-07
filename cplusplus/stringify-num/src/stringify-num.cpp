@@ -65,8 +65,10 @@ std::string stringify_number(int64_t number, bool insert_and = false) {
 	int64_t factor = 1000;
 	uint8_t factor_index = 0;
 	while (number >= factor) {
-		result = stringify_hundred(number / factor % 1000, insert_and) + \
-			" " + hundred_suffixes[factor_index] + ((number % factor) ? (" " + result) : "");
+		if (number / factor % 1000 != 0) {
+			result = stringify_hundred(number / factor % 1000, insert_and) + \
+				" " + hundred_suffixes[factor_index] + ((number % factor) ? (" " + result) : "");
+		}
 		factor *= 1000;
 		factor_index += 1;
 	}
