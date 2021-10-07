@@ -93,14 +93,17 @@ def stringify_number(number: int, insert_and: bool = False) -> str:
         result = "negative " + result
     return result
 
-# Main:
-try:
-    if len(sys.argv) > 1:
-        input_number: int = int(sys.argv[1])
-    else:
-        input_number: int = int(input("Enter a number: "))
-except:
-    print("Invalid Input! Please enter a single number without any commas.")
-    sys.exit()
+def __main__():
+    try:
+        if len(sys.argv) > 1:
+            input_number: int = int(sys.argv[1])
+        else:
+            input_number: int = int(input("Enter a number: "))
+    except:
+        print("Invalid Input! Please enter a single number without any commas.")
+        sys.exit()
 
-print("Number " + str(input_number) + " is " + stringify_number(input_number))
+    print("Number " + str(input_number) + " is " + stringify_number(input_number))
+
+if __name__ == "__main__":
+    __main__()

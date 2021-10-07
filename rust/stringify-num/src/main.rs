@@ -14,7 +14,10 @@ const HUNDRED_SUFFIXES: [&str; 6] = [
     "thousand", "million", "billion", "trillion", "quadrillion", "quintillion"
 ];
 
-fn stringify_hundred(number: i64) -> String {
+fn stringify_hundred(number: isize) -> String {
+	if number > 999 {
+		panic!("stringify_hundred value must be under 1000, got {}", number);
+	}
 	let mut result = String::from("");
 
 	// Specially handle numbers under 10 (specifically for zero).
@@ -56,12 +59,12 @@ fn stringify_hundred(number: i64) -> String {
 	return result + NUMBER_DIGITS[(number % 10) as usize];
 }
 
-fn stringify_number(mut number: i64) -> String {
+fn stringify_number(mut number: isize) -> String {
 	let negative = number < 0;
 	number = number.abs();
 	let mut result = stringify_hundred(number % 1000);
 
-	let mut factor: i64 = 1000;
+	let mut factor = 1000;
 	let mut factor_index = 0;
 	while number >= factor {
 		let next_hundred = stringify_hundred(number / factor % 1000) + " " + HUNDRED_SUFFIXES[factor_index];
@@ -71,7 +74,12 @@ fn stringify_number(mut number: i64) -> String {
 		} else {
 			result = next_hundred;
 		}
-		factor *= 1000;
+		let factor_result = factor.checked_mul(1000);
+		if factor_result == None {
+			panic!("Overflow in factor calculation; input number too large. Got: {}", number);
+		} else {
+			factor = factor_result.unwrap();
+		}
 		factor_index += 1;
 	}
 
@@ -82,7 +90,7 @@ fn stringify_number(mut number: i64) -> String {
 }
 
 fn main() {
-	let source_num: isize;
+	let source_num;
 	if env::args().len() >= 2 {
 		let args: Vec<String> = env::args().collect();
 		source_num = args[1].parse().unwrap();
@@ -94,5 +102,5 @@ fn main() {
 			.expect("Failed to read input");
 		source_num = source_str[..source_str.len() - 1].parse().unwrap();
 	}
-	println!("Number {} is {}", source_num, stringify_number(source_num as i64));
+	println!("Number {} is {}", source_num, stringify_number(source_num));
 }
