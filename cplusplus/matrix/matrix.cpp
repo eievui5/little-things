@@ -40,7 +40,7 @@ namespace matrix {
 }
 
 static struct option const longopts[] = {
-    {"direct",        required_argument, NULL, 'd' },
+    { "direct",       required_argument, NULL, 'd' },
 	{ "file",         required_argument, NULL, 'f' },
 	{ "lines",        required_argument, NULL, 'l' },
 	{ "width",        required_argument, NULL, 'w' },
@@ -66,6 +66,7 @@ int main(int argc, char* argv[]) {
                 matrix::line_lookup.push_back(nextc);
             }
             matrix::line_lookup.push_back(" ");
+            break;
         }
         case 'f': {
             std::ifstream input_file;
