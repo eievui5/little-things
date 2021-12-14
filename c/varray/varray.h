@@ -6,9 +6,6 @@
 // This library has been made as lightweight as possible. There is no compiled
 // code, just a collection of macros and static inline functions.
 
-// While some functions provide error checking, this is done using C's `assert`
-// and so can easily be disabled by passing -DNDEBUG
-
 // Ultimately this library is able to produce very small and fast output while
 // abstracting away the logic behind variably-sized arrays.
 
@@ -19,54 +16,45 @@
 #include <stdlib.h>
 #include <string.h>
 
-// Constuct a new VArray of a given size.
-#define va_new(t, s) (VArray) {(s), sizeof(t), malloc(s * sizeof(t))}
-#define va_foreach(i, each, va) (i) = 0, (each) = (va)->buf; i < (va)->size; i += 1, each += 1
+#define _va_head(va) ((VArrayHeader*) ((va) - sizeof(VArrayHeader)))
 
 // A malloc-like interface for accessing a dynamically-sized array.
-typedef struct VArray {
+typedef struct VArrayHeader {
     size_t size; // Current size of the array in bytes.
-    unsigned char width; // Width in bytes of the contained type.
-    void* buf;
-} VArray;
+} VArrayHeader;
 
-// Returns the element at a given index in a VArray.
-// Asserts that the index is within bounds unless NDEBUG is defined.
-#define va_get(va, t, i) \
-    (assert((i) < (va)->size), \
-    (t*) ((va)->buf + (i) * (va)->width))
+// Constuct a new VArray of a given size.
+static inline void* va_new(size_t s) {
+    VArrayHeader* head = malloc(s + sizeof(VArrayHeader));
+    head->size = s;
+    return head + 1;
+}
+
+// Get the size of a VArray.
+static inline size_t va_sizeof(void* va) {
+    return _va_head(va)->size;
+}
 
 // Resizes a VArray.
-// Asserts that allocation does not return NULL unless NDEBUG is defined.
-static inline void va_resize(VArray* va, size_t s) {
-    va->buf = realloc(va->buf, s);
-    assert(va->buf != NULL);
-    va->size = s;
+static inline void* va_resize(void* va, size_t s) {
+    VArrayHeader* head = realloc(_va_head(va), sizeof(VArrayHeader) + s);
+    head->size = s;
+    return head + 1;
 }
 
 // Appends additional bytes to a VArray.
-// Returns the index of the new elements.
-static inline size_t va_expand(VArray* va, size_t s) {
-    size_t old_size = va->size;
-    va->size += s;
-    va->buf = realloc(va->buf, va->size * (va)->width);
-    assert(va->buf != NULL);
-    return old_size;
-}
-
-// Execute a memset on a VArray.
-static inline void va_set(VArray* va, char n) {
-    memset(va->buf, n, va->size);
+static inline void* va_expand(void* va, size_t s) {
+    return va_resize(va, _va_head(va)->size + s);
 }
 
 // Duplicate a VArray.
-static inline VArray va_dup(VArray* va) {
-    void* buf = malloc(va->size * va->width);
-    memcpy(buf, va->buf, va->size * va->width);
-    return (VArray) {va->size, va->width, buf};
+static inline void* va_dup(void* va) {
+    VArrayHeader* new_va = malloc(_va_head(va)->size + sizeof(VArrayHeader));
+    memcpy(new_va, _va_head(va), _va_head(va)->size + sizeof(VArrayHeader));
+    return new_va + 1;
 }
 
 // Free a VArray's buffer.
-static inline void va_free(VArray* va) {
-    free(va->buf);
+static inline void va_free(void* va) {
+    free(_va_head(va));
 }

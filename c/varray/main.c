@@ -2,24 +2,24 @@
 #include "varray.h"
 
 int main() {
-    VArray number_vector = va_new(int, 10);
-    printf("Created VArray of size %zu\n", number_vector.size);
-    for (int i = 0; i < number_vector.size; i++) {
-        *va_get(&number_vector, int, i) = i * 10;
-        printf("Number %i is %i\n", i, *va_get(&number_vector, int, i));
+    int* number_vector = va_new(10 * sizeof(int));
+    printf("Created VArray of size %zu\n", va_sizeof(number_vector));
+    for (int i = 0; i < va_sizeof(number_vector) / sizeof(int); i++) {
+        number_vector[i] = i * 10;
+        printf("Number %i is %i\n", i, number_vector[i]);
     }
 
-    VArray second_vector = va_dup(&number_vector);
+    size_t old_size = va_sizeof(number_vector);
+    int* second_vector = va_expand(va_dup(number_vector), 10 * sizeof(int));
     puts("Expanding vector...");
-    for (int i = va_expand(&second_vector, 10); i < second_vector.size; i++) {
-        *va_get(&second_vector, int, i) = i * 10;
+    for (int i = old_size / sizeof(int); i < va_sizeof(second_vector) / sizeof(int); i++) {
+        second_vector[i] = i * 16;
     }
-    printf("After expansion, VArray has a size of %zu.\n", second_vector.size);
+    printf("After expansion, VArray has a size of %zu.\n", va_sizeof(second_vector));
 
     puts("The final VArray contains:");
-    int i; int* each;
-    for (va_foreach(i, each, &second_vector)) {
-        printf("va[%i]:\t%i\n", i, *each);
+    for (int i = 0; i < va_sizeof(second_vector) / sizeof(int); i++) {
+        printf("va[%i]:\t%i\n", i, second_vector[i]);
     }
 
     puts("Done. Exiting.");
