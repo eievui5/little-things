@@ -1,16 +1,40 @@
 #pragma once
 
-// I've said before that one of the only reasons I use C++ is for std::string,
-// std::vector and std::unordered_map. This tiny library aims to fix that.
+/*
+MIT License
 
-// This library has been made as lightweight as possible. There is no compiled
-// code, just a collection of macros and static inline functions.
+Copyright (c) 2021 Eievui
 
-// Ultimately this library is able to produce very small and fast output while
-// abstracting away the logic behind variably-sized arrays.
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-// The "V" in "VArray" can be interpreted as either "variable" or "vector",
-// whichever you prefer to read it as :)
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+I've said before that one of the only reasons I use C++ is for std::string,
+std::vector, and std::unordered_map. This tiny library aims to make vectors and
+strings more convienient to use in C.
+
+This library has been made as lightweight as possible. There is no compiled
+code, just a collection of macros and static inline functions. Ultimately it is
+able to produce very small and fast output while abstracting away the logic
+behind variably-sized arrays.
+
+The "V" in "VArray" can be interpreted as either "variable" or "vector",
+whichever you prefer to read it as :)
+*/
 
 #include <stdlib.h>
 #include <string.h>
