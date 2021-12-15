@@ -12,7 +12,6 @@
 // The "V" in "VArray" can be interpreted as either "variable" or "vector",
 // whichever you prefer to read it as :)
 
-#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 
