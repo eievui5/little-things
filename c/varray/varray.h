@@ -52,12 +52,14 @@ whichever you prefer to read it as :)
 // user is able to directly index the array and use any type of their choosing.
 typedef struct VArrayHeader {
     size_t size; // Current size of the array in bytes.
+    size_t _true_size; // The actual size of the allocated buffer.
 } VArrayHeader;
 
 // Construct a new VArray of a given size.
 static inline void* va_new(size_t s) {
-    VArrayHeader* head = malloc(s + sizeof(VArrayHeader));
+    VArrayHeader* head = malloc(s * 2 + sizeof(VArrayHeader));
     head->size = s;
+    head->_true_size = s * 2;
     return head + 1;
 }
 
@@ -68,8 +70,13 @@ static inline size_t va_size(void* va) {
 
 // Resizes a VArray. Requires a pointer to the VArray.
 static inline void va_resize(void* va, size_t s) {
-    VArrayHeader* head = realloc(va_header(*(void**) va), sizeof(VArrayHeader) + s);
+    VArrayHeader* head = va_header(*(void**) va);
     head->size = s;
+    if (head->size > head->_true_size) {
+        while (head->size > head->_true_size)
+            head->_true_size *= 2;
+        head = realloc(va_header(*(void**) va), sizeof(VArrayHeader) + head->_true_size);
+    }
     *(void**) va = head + 1;
 }
 
@@ -80,8 +87,8 @@ static inline void va_expand(void* va, size_t s) {
 
 // Duplicate a VArray.
 static inline void* va_dup(void* va) {
-    VArrayHeader* new_va = malloc(va_header(va)->size + sizeof(VArrayHeader));
-    memcpy(new_va, va_header(va), va_header(va)->size + sizeof(VArrayHeader));
+    VArrayHeader* new_va = malloc(va_header(va)->_true_size + sizeof(VArrayHeader));
+    memcpy(new_va, va_header(va), va_header(va)->_true_size + sizeof(VArrayHeader));
     return new_va + 1;
 }
 
