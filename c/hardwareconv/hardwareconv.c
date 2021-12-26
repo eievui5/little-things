@@ -48,7 +48,7 @@ void convert_file(FILE* infile, FILE* outfile) {
             }
             free(type);
         } else {
-            while (getc(infile) != '\n');
+            while (getc(infile) != '\n' && !feof(infile));
         }
 
         free(next_word);
