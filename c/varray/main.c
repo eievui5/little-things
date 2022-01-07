@@ -2,12 +2,12 @@
 #include "varray.h"
 
 int main() {
-    printf("Creating VArray of size %zu and filling it with multiples of 10.\n", va_size(number_vector));
-    int* number_vector = va_new(5 * sizeof(int));    
+    printf("Creating VArray and filling it with multiples of 10.\n");
+    int* number_vector = va_new(5 * sizeof(int));
     for (int i = 0; i < va_len(number_vector); i++)
         number_vector[i] = i * 10;
 
-    printf("Expanding VArray to %zu and appending multiples of 16.\n", va_size(second_vector));
+    printf("Expanding VArray and appending multiples of 16.\n");
     int* second_vector = va_dup(number_vector);
     va_expand(&second_vector, 3 * sizeof(int));
     for (int i = va_len(number_vector); i < va_len(second_vector); i++)
@@ -28,7 +28,7 @@ int main() {
 
     char* another_string = va_newstr("World");
     va_append_char(&another_string, '!');
-    
+
     va_strcat(&mutable_string, another_string);
 
     puts(mutable_string);
