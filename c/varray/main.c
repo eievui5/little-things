@@ -2,12 +2,12 @@
 #include "varray.h"
 
 int main() {
-    printf("Creating VArray and filling it with multiples of 10.\n");
+    puts("Creating VArray and filling it with multiples of 10.");
     int* number_vector = va_new(5 * sizeof(int));
     for (int i = 0; i < va_len(number_vector); i++)
         number_vector[i] = i * 10;
 
-    printf("Expanding VArray and appending multiples of 16.\n");
+    puts("Expanding VArray and appending multiples of 16.");
     int* second_vector = va_dup(number_vector);
     va_expand(&second_vector, 3 * sizeof(int));
     for (int i = va_len(number_vector); i < va_len(second_vector); i++)
